@@ -1,4 +1,4 @@
-from pymjc.front.ast import *
+from pymjc.front import ast
 from pymjc.front.lexer import MJLexer
 from sly import Parser
 
@@ -253,23 +253,23 @@ class MJParser(Parser):
     ##################################
     @_('BooleanLiteral')
     def Literal(self, p):
-        return p
+        return p.BooleanLiteral
 
     @_('IntLiteral')
     def Literal(self, p):
-        return p
+        return p.IntLiteral
 
     @_('TRUE')
     def BooleanLiteral(self, p):
-        return p
+        return ast.TrueExp()
 
     @_('FALSE')
     def BooleanLiteral(self, p):
-        return p
+        return ast.FalseExp()
 
     @_('NUM')
     def IntLiteral(self, p):
-        return p
+        return ast.IntegerLiteral(int(p.NUM))
 
     def error(self, p):
         MJLogger.parser_log(self.src_file_name, p.lineno, p.value[0])
