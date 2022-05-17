@@ -81,7 +81,7 @@ class ClassEntry():
 
     def __init__(self, supper_class_id: str = None):
         self.fields = {}
-        self.methods = {}
+        self.methods = {'NO_METHOD': None}
         self.supper_class_id = supper_class_id
 
 
@@ -128,7 +128,7 @@ class ClassEntry():
 class SymbolTable():
     
     def __init__(self) -> None:
-        self.class_scopes = {}
+        self.class_scopes = {'NO_CLASS': None}
         self.curr_class = None
         self.curr_method = None
         self.curr_class_name = None
