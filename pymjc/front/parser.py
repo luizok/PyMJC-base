@@ -106,19 +106,19 @@ class MJParser(Parser):
 
     @_('INT')
     def Type(self, p):
-        return p
+        return ast.IntegerType()
 
     @_('INT LEFTSQRBRACKET RIGHTSQRBRACKET')
     def Type(self, p):
-        return p
+        return ast.IntArrayType()
 
     @_('BOOLEAN')
     def Type(self, p):
-        return p
+        return ast.BooleanType()
 
     @_('Identifier')
     def Type(self, p):
-        return p
+        return ast.IdentifierType(p.Identifier)
 
     ###################################
     #Statements Declarations          #
