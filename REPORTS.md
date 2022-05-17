@@ -40,31 +40,33 @@
 
 1. Qual é o nome do relator?
 
-    > Escreva sua resposta aqui
+    > Luiz Felipe Sousa Maciel
 
 2. A etapa foi completamente ou parcialmente concluída?
 
-    > Escreva sua resposta aqui
+    > Parcialmente concluída
 
 3. No caso de parcialmente concluída, o que não foi concluído?
 
-    > Escreva sua resposta aqui
+    > Faltou a implementação de alguns visits
 
 4. O programa passa nos testes automatizados?
     
-    > Escreva sua resposta aqui
+    > Não
 
 5. Algum erro de execução foi encontrado para alguma das entradas? Quais?
     
-    > Escreva sua resposta aqui
+    > Boa parte, senão todas, contiveram algum tipo de erro relacionado
+    > a contagem de itens a serem verificados
 
 6. Quais as dificuldades encontradas para realização da etapa do projeto?
     
-    > Escreva sua resposta aqui
+    > Implementar ambos os Visitors para um único membro, mas principalmente
+    > Debugar o código e saber com base nos testes, o que exatamente está dando erro (em qual entrada o erro ocorre).
 
 7. Qual a participação de cada membro da equipe na etapa de execução?
     
-    > Escreva sua resposta aqui
+    > Luiz Felipe: Tudo
 
 
 # 3º Relatóio: Etapa AI-c (Tradução para o Código Intermediário)
