@@ -241,11 +241,11 @@ class MJParser(Parser):
     ###################################
     @_('ID')
     def Identifier(self, p):
-        return p
+        return ast.Identifier(p.ID)
 
     @_('')
     def Empty(self, p):
-        return p
+        return None
 
 
     ##################################
