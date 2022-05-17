@@ -1226,11 +1226,14 @@ class TypeCheckingVisitor(TypeVisitor):
 
     def visit_main_class(self, element: MainClass) -> Type:
         
-        self.symbol_table.set_curr_class(element.class_name_identifier.name)
+        if element:
+            self.symbol_table.set_curr_class(element.class_name_identifier.name)
 
+            element.class_name_identifier.accept(self)
+            element.arg_name_ideintifier.accept(self)
+            element.statement.accept(self)
 
-
-        self.symbol_table.set_curr_class('NO_CLASS')
+            self.symbol_table.set_curr_class('NO_CLASS')
         
 
     def visit_class_decl_extends(self, element: ClassDeclExtends) -> Type:
@@ -1297,9 +1300,17 @@ class TypeCheckingVisitor(TypeVisitor):
         pass
 
     def visit_if(self, element: If) -> Type:
+        # bool_exp = element.condition_exp.accept_type(self)
+
+        # if not isinstance(bool_exp, BooleanType):
+        #     self.add_semantic_error(SemanticErrorType.IF_TYPE_MISMATCH)
         pass
 
     def visit_while(self, element: While) -> Type:
+        # bool_exp = element.condition_exp.accept_type(self)
+
+        # if not isinstance(bool_exp, BooleanType):
+        #     self.add_semantic_error(SemanticErrorType.WHILE_TYPE_MISMATCH)
         pass
     
     def visit_print(self, element: Print) -> Type:
@@ -1310,9 +1321,6 @@ class TypeCheckingVisitor(TypeVisitor):
         lhs_type = element.left_side.accept_type(self)
         rhs_type = element.right_side.accept_type(self)
 
-        print(f'{type(lhs_type)=}')
-        print(f'{type(rhs_type)=}\n')
-    
         if not (type(lhs_type) == type(rhs_type)):
             self.add_semantic_error(SemanticErrorType.ASSIGN_TYPE_MISMATCH)
     
@@ -1381,6 +1389,11 @@ class TypeCheckingVisitor(TypeVisitor):
         pass
 
     def visit_call(self, element: Call) -> Type:
+        # check ids, both object name and member name
+        # check number of arguments
+        # check order
+        # check types
+        # return method type
         pass
 
     def visit_integer_literal(self, element: IntegerLiteral) -> Type:
@@ -1393,7 +1406,7 @@ class TypeCheckingVisitor(TypeVisitor):
         return BooleanType()
 
     def visit_identifier_exp(self, element: IdentifierExp) -> Type:
-        return IdentifierType(element.name)
+        return self.visit_identifier(Identifier(element.name))
 
     def visit_this(self, element: This) -> Type:
         return IdentifierType(self.symbol_table.curr_class_name)
@@ -1414,11 +1427,22 @@ class TypeCheckingVisitor(TypeVisitor):
 
     def visit_identifier(self, element: Identifier) -> Type:
         name = element.name
-        if self.symbol_table.curr_method.contains_local(name):
+        if(
+            self.symbol_table.curr_method is not None and
+            self.symbol_table.curr_method.contains_local(name)
+        ):
             return self.symbol_table.curr_method.get_locals(name)
 
-        if self.symbol_table.curr_method.contains_param(name):
+        if(
+            self.symbol_table.curr_method is not None and
+            self.symbol_table.curr_method.contains_param(name)
+        ):
             return self.symbol_table.curr_method.get_param_by_name(name)
         
-        if self.symbol_table.curr_class.contains_field(name):
+        if(
+            self.symbol_table.curr_class is not None and
+            self.symbol_table.curr_class.contains_field(name)
+        ):
             return self.symbol_table.curr_class.get_field(name)
+
+        self.add_semantic_error(SemanticErrorType.UNDECLARED_IDENTIFIER)
