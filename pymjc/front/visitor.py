@@ -676,27 +676,90 @@ class FillSymbolTableVisitor(Visitor):
         return self.symbol_table
 
     def visit_program(self, element: Program) -> None:
-        pass
+        
+        if element:
+            element.main_class.accept(self)
+
+            n = element.class_decl_list.size()
+            for i in range(n):
+                element.class_decl_list.element_at(i).accept(self)
 
     def visit_main_class(self, element: MainClass) -> None:
-        pass
+
+        if element:
+            main_class_id = element.class_name_identifier.name
+
+            self.symbol_table.add_scope(main_class_id, ClassEntry())
+            self.symbol_table.set_curr_class(main_class_id)
+
+            element.class_name_identifier.accept(self)
+            element.arg_name_ideintifier.accept(self)
+            element.statement.accept(self)
+
+            self.symbol_table.set_curr_class('NO_CLASS')
 
     def visit_class_decl_extends(self, element: ClassDeclExtends) -> None:
         pass
 
     def visit_class_decl_simple(self, element: ClassDeclSimple) -> None:
-        pass
+        
+        if element:
+            element.class_name.accept(self)
+            class_id = element.class_name.name
+            if not self.symbol_table.add_scope(class_id, ClassEntry()):
+                self.add_semantic_error(SemanticErrorType.ALREADY_DECLARED_CLASS)
+            
+            self.symbol_table.set_curr_class(class_id)
+            n = element.var_decl_list.size()
+            for i in range(n):
+                element.var_decl_list.element_at(i).accept(self)
+
+            n = element.method_decl_list.size()
+            for i in range(n):
+                element.method_decl_list.element_at(i).accept(self)
+        print(f'{self.symbol_table.curr_class.fields}')
 
     def visit_var_decl(self, element: VarDecl) -> None:
-        pass
-     
+        # ? TODO how to distiguish if its add_field or add_local
+        # * Created NO_CLASS and NO_METHOD to identify no scopes
+        if self.symbol_table.curr_method is None:
+            if not self.symbol_table.add_field(element.name.name, element.type):
+                self.add_semantic_error(SemanticErrorType.ALREADY_DECLARED_VAR)
+            return
+
+        if not self.symbol_table.add_local(element.name.name, element.type):
+            self.add_semantic_error(SemanticErrorType.ALREADY_DECLARED_VAR)  
 
     def visit_method_decl(self, element: MethodDecl) -> None:
-        pass
+
+        if element:
+            method_id = element.name.name
+
+            if not self.symbol_table.add_method(method_id, MethodEntry(element.type)):
+                self.add_semantic_error(SemanticErrorType.ALREADY_DECLARED_METHOD)
+
+            self.symbol_table.set_curr_method(method_id)
+
+            n = element.formal_param_list.size()
+            for i in range(n):
+                element.formal_param_list.element_at(i).accept(self)
+
+            n = element.var_decl_list.size()
+            for i in range(n):
+                element.var_decl_list.element_at(i).accept(self)
+
+            n = element.statement_list.size()
+            for i in range(n):
+                element.statement_list.element_at(i).accept(self)
+
+            element.return_exp.accept(self)
+
+            self.symbol_table.set_curr_method('NO_METHOD')
 
     def visit_formal(self, element: Formal) -> None:
-        pass
-
+        # ? TODO how to avoid conflict between parameters and local vars
+        if not self.symbol_table.add_param(element.name.name, element.type):
+            self.add_semantic_error(SemanticErrorType.DUPLICATED_ARG)
 
     def visit_int_array_type(self, element: IntArrayType) -> None:
         pass
