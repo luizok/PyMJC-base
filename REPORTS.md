@@ -2,31 +2,38 @@
 
 1. Qual é o nome do relator?
 
-    > Escreva sua resposta aqui
+    > Luiz Felipe Sousa Maciel
 
 2. A etapa foi completamente ou parcialmente concluída?
 
-    > Escreva sua resposta aqui
+    > Parcialmente (aprox 95%)
 
 3. No caso de parcialmente concluída, o que não foi concluído?
 
-    > Escreva sua resposta aqui
+    > Duas regras que quando são adicionadas geram conflito de shift/reduce
 
 4. O programa passa nos testes automatizados?
     
-    > Escreva sua resposta aqui
+    > Não
 
 5. Algum erro de execução foi encontrado para alguma das entradas? Quais?
     
-    > Escreva sua resposta aqui
+    > Inicialmente tivemos problemas com todos os arquivos de teste que
+    > se encontravam no diretorio faulty/tokens. O programa entrava em loop
+    > infinito sempre que encontrava qualquer token que não estava n Lexer
 
 6. Quais as dificuldades encontradas para realização da etapa do projeto?
     
-    > Escreva sua resposta aqui
+    > Resolver os problemas de shift/reduce. Uma parte deles foi resolvido
+    > com a remoção de recursão a esquerda, um outro conjunto de regras
+    > ficou pendente de solução.
 
 7. Qual a participação de cada membro da equipe na etapa de execução?
     
-    > Escreva sua resposta aqui
+    > Luiz Felipe: Implementação do lexer e parser e solução dos problemas
+    >
+    > Victor Rocha: Ajuda na construção da gramática e na resolução
+    > dos problemas
 
 
 # 2º Relatóio: Etapa AI-b (Árvores Sintática Abstrata e Análise Semântica)
