@@ -162,35 +162,35 @@ class MJParser(Parser):
 
     @_('Expression AND Expression')
     def Expression(self, p):
-        return p
+        return ast.And(p.Expression0, p.Expression1)
 
     @_('Expression LESS Expression')
     def Expression(self, p):
-        return p
+        return ast.LessThan(p.Expression0, p.Expression1)
 
     @_('Expression PLUS Expression')
     def Expression(self, p):
-        return p
+        return ast.Plus(p.Expression0, p.Expression1)
 
     @_('Expression MINUS Expression')
     def Expression(self, p):
-        return p
+        return ast.Minus(p.Expression0, p.Expression1)
 
     @_('Expression TIMES Expression')
     def Expression(self, p):
-        return p
+        return ast.Times(p.Expression0, p.Expression1)
 
     @_('Expression LEFTSQRBRACKET Expression RIGHTSQRBRACKET')
     def Expression(self, p):
-        return p
+        return ast.ArrayLookup(p.Expression0, p.Expression1)
 
     @_('Expression DOT LENGTH')
     def Expression(self, p):
-        return p
+        return ast.ArrayLength(p.Expression)
 
     @_('Expression DOT Identifier LEFTPARENT ExpressionListOpt RIGHTPARENT')
     def Expression(self, p):
-        return p
+        return ast.Call(p.Expression, p.Identifier, p.ExpressionListOpt)
 
     @_('Empty')
     def ExpressionListOpt(self, p):
@@ -210,31 +210,31 @@ class MJParser(Parser):
 
     @_('THIS')
     def Expression(self, p):
-        return p
+        return ast.This()
 
     @_('NEW INT LEFTSQRBRACKET Expression RIGHTSQRBRACKET')
     def Expression(self, p):
-        return p
+        return ast.NewArray(p.Expression)
 
     @_('NEW Identifier LEFTPARENT RIGHTPARENT')
     def Expression(self, p):
-        return p
+        return ast.NewObject(p.Identifier)
 
     @_('NOT Expression')
     def Expression(self, p):
-        return p
+        return ast.Not(p.Expression)
 
     @_('LEFTPARENT Expression RIGHTPARENT')
     def Expression(self, p):
-        return p
+        return p.Expression
 
     @_('Identifier')
     def Expression(self, p):
-        return p
+        return p.IdentifierExp(p.Identifier)
 
     @_('Literal')
     def Expression(self, p):
-        return p
+        return p.Literal
 
     ###################################
     #Basic Declarations               #
