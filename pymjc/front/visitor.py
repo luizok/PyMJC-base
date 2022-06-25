@@ -1609,21 +1609,17 @@ class TranslateVisitor(IRVisitor):
     def visit_formal(self, element: Formal) -> translate.Exp:
         pass
 
-    @abstractmethod
     def visit_int_array_type(self, element: IntArrayType) -> translate.Exp:
-        pass
+        return None
 
-    @abstractmethod
     def visit_boolean_type(self, element: BooleanType) -> translate.Exp:
-        pass
+        return None
 
-    @abstractmethod
     def visit_integer_type(self, element: IntegerType) -> translate.Exp:
-        pass
+        return None
 
-    @abstractmethod
     def visit_identifier_type(self, element: IdentifierType) -> translate.Exp:
-        pass
+        return None
 
     @abstractmethod
     def visit_block(self, element: Block) -> translate.Exp:
