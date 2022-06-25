@@ -1694,17 +1694,14 @@ class TranslateVisitor(IRVisitor):
     def visit_call(self, element: Call) -> translate.Exp:
         pass
 
-    @abstractmethod
     def visit_integer_literal(self, element: IntegerLiteral) -> translate.Exp:
-        pass
+        return translate.Exp(tree.CONST(element.value))
 
-    @abstractmethod
     def visit_true_exp(self, element: TrueExp) -> translate.Exp:
-        pass
+        return translate.Exp(tree.CONST(1))
 
-    @abstractmethod
     def visit_false_exp(self, element: FalseExp) -> translate.Exp:
-        pass
+        return translate.Exp(tree.CONST(0))
 
     @abstractmethod
     def visit_identifier_exp(self, element: IdentifierExp) -> translate.Exp:
