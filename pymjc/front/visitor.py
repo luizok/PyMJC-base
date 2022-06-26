@@ -1633,9 +1633,13 @@ class TranslateVisitor(IRVisitor):
     def visit_while(self, element: While) -> translate.Exp:
         pass
 
-    @abstractmethod
     def visit_print(self, element: Print) -> translate.Exp:
-        pass
+        vargs: List[tree.Exp] = []
+        exp: translate.Exp = element.print_exp.accept_ir(self)
+        vargs.add(exp.un_ex())
+
+        ext_call_exp: translate.Exp = self.current_frame.external_call("printf", vargs)
+        return translate.Exp(ext_call_exp)
 
     def visit_assign(self, element: Assign) -> translate.Exp:
         var: translate.Exp = element.left_side_id.accept_ir(self)
