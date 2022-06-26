@@ -5,7 +5,7 @@ from typing import List
 from pymjc.back.assem import MOVE
 
 from pymjc.front.ast import *
-from pymjc.front.frame import Frame
+from pymjc.front.frame import Access, Frame
 from pymjc.front import translate
 from pymjc.front import tree #CONST, Stm, MOVE
 from pymjc.front.visitorkinds import *
@@ -1677,7 +1677,7 @@ class TranslateVisitor(IRVisitor):
     def visit_print(self, element: Print) -> translate.Exp:
         vargs: List[tree.Exp] = []
         exp: translate.Exp = element.print_exp.accept_ir(self)
-        vargs.add(exp.un_ex())
+        vargs.append(exp.un_ex())
 
         ext_call_exp: translate.Exp = self.current_frame.external_call("printf", vargs)
         return translate.Exp(ext_call_exp)
@@ -1803,7 +1803,7 @@ class TranslateVisitor(IRVisitor):
             self.current_frame.word_size()
         )
 
-        vargs.add(array_size)
+        vargs.append(array_size)
 
         return translate.Exp(self.current_frame.external_call('malloc', vargs))
 
