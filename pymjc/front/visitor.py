@@ -1807,9 +1807,16 @@ class TranslateVisitor(IRVisitor):
 
         return translate.Exp(self.current_frame.external_call('malloc', vargs))
 
-    @abstractmethod
     def visit_new_object(self, element: NewObject) -> translate.Exp:
-        pass
+        class_ptype = self.symbol_table.get_class_entry(element.object_name_id)
+        n_attrs = len(class_ptype.get_fields())
+        vargs: List[tree.Exp] = []
+
+        obj_size: tree.BINOP = tree.BINOP(tree.BINOP.MUL, tree.CONST(n_attrs + 1), self.current_frame.word_size())
+        vargs.append(obj_size)
+
+        return translate.Exp(self.current_frame.external_call('malloc', vargs))
+
 
     def visit_not(self, element: Not) -> translate.Exp:
         exp: translate.Exp = element.negated_exp.accept_ir(self)
