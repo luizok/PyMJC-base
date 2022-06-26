@@ -220,7 +220,7 @@ class MJParser(Parser):
 
     @_('Expression')
     def ExpressionListStar(self, p):
-        exp_list = ExpList()
+        exp_list = ast.ExpList()
         exp_list.add_element(p.Expression)
         return exp_list
 
