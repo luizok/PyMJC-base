@@ -1705,7 +1705,7 @@ class TranslateVisitor(IRVisitor):
                     tree.CONST(1),
                     array_size.un_ex()
                 ),
-                self.current_frame.word_size()
+                tree.CONST(self.current_frame.word_size())
             )
         )
 
@@ -1789,7 +1789,7 @@ class TranslateVisitor(IRVisitor):
         pass
 
     def visit_new_array(self, element: NewArray) -> translate.Exp:
-        exp: translate.Exp = element.new_exp.accept_ir()
+        exp: translate.Exp = element.new_exp.accept_ir(self)
         vargs: List[tree.Exp] = []
 
         # (1 + exp) * word_size
@@ -1799,7 +1799,7 @@ class TranslateVisitor(IRVisitor):
                 tree.CONST(1),
                 exp.un_ex()
             ),
-            self.current_frame.word_size()
+            tree.CONST(self.current_frame.word_size())
         )
 
         vargs.append(array_size)
@@ -1811,7 +1811,7 @@ class TranslateVisitor(IRVisitor):
         n_attrs = len(class_ptype.get_fields())
         vargs: List[tree.Exp] = []
 
-        obj_size: tree.BINOP = tree.BINOP(tree.BINOP.MUL, tree.CONST(n_attrs + 1), self.current_frame.word_size())
+        obj_size: tree.BINOP = tree.BINOP(tree.BINOP.MUL, tree.CONST(n_attrs + 1), tree.CONST(self.current_frame.word_size()))
         vargs.append(obj_size)
 
         return translate.Exp(self.current_frame.external_call('malloc', vargs))
