@@ -247,7 +247,7 @@ class MJParser(Parser):
 
     @_('LEFTPARENT Expression RIGHTPARENT')
     def Expression(self, p):
-        return ast.p.Expression
+        return p.Expression
 
     @_('Identifier')
     def Expression(self, p):
