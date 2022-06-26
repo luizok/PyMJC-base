@@ -1626,8 +1626,10 @@ class TranslateVisitor(IRVisitor):
         pass
 
     def visit_if(self, element: If) -> translate.Exp:
-        pass
-  
+        cond_exp : translate.Exp = element.condition_exp.accept_ir(self)
+        if_stmt :translate.Exp = element.if_statement.accept_ir(self)
+        else_stmt :translate.Exp = element.else_statement.accept_ir(self)
+
         true_label : tree.LABEL = tree.LABEL(temp.Label())
         false_label : tree.LABEL = tree.LABEL(temp.Label())
         end_label : tree.LABEL = tree.LABEL(temp.Label())
@@ -1651,7 +1653,7 @@ class TranslateVisitor(IRVisitor):
   
     def visit_while(self, element: While) -> translate.Exp:
         cond_exp : translate.Exp = element.condition_exp.accept_ir(self)
-        body_stmt : tree.Stm = element.statement.accept_ir(self)
+        body_stmt :translate.Exp = element.statement.accept_ir(self)
 
         cond_label: tree.LABEL = tree.Label(temp.Label())
         body_label: tree.LABEL = tree.Label(temp.Label())
