@@ -7,7 +7,7 @@ from pymjc.back.assem import MOVE
 from pymjc.front.ast import *
 from pymjc.front.frame import Access, Frame
 from pymjc.front import translate
-from pymjc.front import tree #CONST, Stm, MOVE
+from pymjc.front import tree
 from pymjc.front.visitorkinds import *
 from pymjc.front.symbol import *
 from pymjc.log import MJLogger
@@ -1745,7 +1745,6 @@ class TranslateVisitor(IRVisitor):
         return translate.Exp(tree.BINOP(tree.BINOP.MUL, exp1.un_ex(), exp2.un_ex()))
 
     def visit_array_lookup(self, element: ArrayLookup) -> translate.Exp:
-        # Aceitamos nossas expressões
         array_pos: translate.Exp = element.in_side_exp.accept_ir(self)
         array_element: translate.Exp = element.out_side_exp.accept_ir(self)
 
