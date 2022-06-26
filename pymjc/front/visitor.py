@@ -1625,13 +1625,52 @@ class TranslateVisitor(IRVisitor):
     def visit_block(self, element: Block) -> translate.Exp:
         pass
 
-    @abstractmethod
     def visit_if(self, element: If) -> translate.Exp:
         pass
   
-    @abstractmethod
+        true_label : tree.LABEL = tree.LABEL(temp.Label())
+        false_label : tree.LABEL = tree.LABEL(temp.Label())
+        end_label : tree.LABEL = tree.LABEL(temp.Label())
+
+        cond_stmt : tree.CJUMP = tree.CJUMP(tree.CJUMP.NE, cond_exp.un_ex(), tree.CONST(0), true_label.label, false_label.label)
+        if_block_stmt : tree.SEQ = tree.SEQ(tree.SEQ(true_label, if_stmt), tree.JUMP(end_label.label))
+        else_block_stmt : tree.SEQ = tree.SEQ(tree.SEQ(false_label, else_stmt), tree.JUMP(end_label.label))
+
+        return translate.Exp(tree.ESEQ(
+            tree.SEQ(
+                cond_stmt, 
+                tree.SEQ(
+                    tree.SEQ(
+                        if_block_stmt,
+                        else_block_stmt
+                    ),
+                    end_label
+                )
+            )
+        ), tree.CONST(0))
+  
     def visit_while(self, element: While) -> translate.Exp:
-        pass
+        cond_exp : translate.Exp = element.condition_exp.accept_ir(self)
+        body_stmt : tree.Stm = element.statement.accept_ir(self)
+
+        cond_label: tree.LABEL = tree.Label(temp.Label())
+        body_label: tree.LABEL = tree.Label(temp.Label())
+        end_label: tree.LABEL = tree.Label(temp.Label())
+
+        while_cond : tree.CJUMP = tree.CJUMP(tree.CJUMP.NE, cond_exp.un_ex(), tree.CONST(0), body_label.label, end_label.label)
+        evaluate_cond: tree.SEQ = tree.SEQ(cond_label, while_cond)
+        while_block_stmt: tree.SEQ = tree.SEQ(body_label, tree.SEQ(body_stmt.un_ex(), tree.JUMP(cond_label.label)))
+
+        return translate.Exp(tree.ESEQ(
+            tree.SEQ(
+                tree.SEQ(
+                    evaluate_cond,
+                    while_block_stmt
+                ),
+                end_label
+            ),
+            tree.CONST(0)
+        ))
 
     def visit_print(self, element: Print) -> translate.Exp:
         vargs: List[tree.Exp] = []
