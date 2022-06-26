@@ -1648,9 +1648,29 @@ class TranslateVisitor(IRVisitor):
 
         return translate.Exp(tree.ESEQ(assign, tree.CONST(0))) 
 
-    @abstractmethod
     def visit_array_assign(self, element: ArrayAssign) -> translate.Exp:
-        pass
+        array_id: translate.Exp = element.array_name_id.accept_ir(self)
+        array_size: translate.Exp = element.array_exp.accept_ir(self)
+        array_exp: translate.Exp = element.right_side_exp.accept_ir(self)
+
+        # array_id + ((array_size + 1) * word_size)
+        array_addr: tree.BINOP = tree.BINOP(
+            tree.BINOP.PLUS,
+            array_id.un_ex(),
+            tree.BINOP(
+                tree.BINOP.MUL,
+                tree.BINOP(
+                    tree.BINOP.PLUS,
+                    tree.CONST(1),
+                    array_size.un_ex()
+                ),
+                self.current_frame.word_size()
+            )
+        )
+
+        move_exp = tree.MOVE(tree.MEM(array_addr), array_exp.un_ex())
+
+        return translate.Exp(tree.ESEQ(move_exp, tree.CONST(0)))
 
     def visit_and(self, element: And) -> translate.Exp:
         exp1: translate.Exp = element.left_side_exp.accept_ir(self)
@@ -1662,6 +1682,7 @@ class TranslateVisitor(IRVisitor):
         exp1: translate.Exp = element.left_side_exp.accept_ir(self)
         exp2: translate.Exp = element.right_side_exp.accept_ir(self)
 
+        # maybe use tree.CJUMP.LT?? exp.un_cx()?
         return translate.Exp(tree.BINOP(tree.BINOP.MINUS, exp2.un_ex(), exp1.un_ex()))
 
     def visit_plus(self, element: Plus) -> translate.Exp:
@@ -1682,13 +1703,29 @@ class TranslateVisitor(IRVisitor):
 
         return translate.Exp(tree.BINOP(tree.BINOP.MUL, exp1.un_ex(), exp2.un_ex()))
 
-    @abstractmethod
     def visit_array_lookup(self, element: ArrayLookup) -> translate.Exp:
-        pass
+        # Aceitamos nossas expressões
+        array_pos: translate.Exp = element.in_side_exp.accept_ir(self)
+        array_element: translate.Exp = element.out_side_exp.accept_ir(self)
 
-    @abstractmethod
+        # array_element + ((1 + array_pos) * word_size)
+        return translate.Exp( tree.MEM(tree.BINOP(
+                tree.BINOP.PLUS, array_element.un_ex(),
+                tree.BINOP(
+                    tree.BINOP.MUL,
+                    tree.BINOP(
+                        tree.BINOP.PLUS,
+                        tree.CONST(1),
+                        array_pos.un_ex()
+                    ),
+                        tree.CONST(self.current_frame.word_size())
+                )
+            )))
+
     def visit_array_length(self, element: ArrayLength) -> translate.Exp:
-        pass
+        exp: translate.Exp = element.length_exp.accept_ir(self)
+
+        return translate.Exp(tree.MEM(exp.un_ex()))
 
     @abstractmethod
     def visit_call(self, element: Call) -> translate.Exp:
@@ -1711,9 +1748,23 @@ class TranslateVisitor(IRVisitor):
     def visit_this(self, element: This) -> translate.Exp:
         pass
 
-    @abstractmethod
     def visit_new_array(self, element: NewArray) -> translate.Exp:
-        pass
+        exp: translate.Exp = element.new_exp.accept_ir()
+        vargs: List[tree.Exp] = []
+
+        # (1 + exp) * word_size
+        array_size: tree.Exp = tree.BINOP(
+            tree.BINOP.MUL,
+            tree.BINOP(
+                tree.CONST(1),
+                exp.un_ex()
+            ),
+            self.current_frame.word_size()
+        )
+
+        vargs.add(array_size)
+
+        return translate.Exp(self.current_frame.external_call('malloc', vargs))
 
     @abstractmethod
     def visit_new_object(self, element: NewObject) -> translate.Exp:
