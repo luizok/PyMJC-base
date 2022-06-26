@@ -1605,9 +1605,9 @@ class TranslateVisitor(IRVisitor):
         self.var_access = {}
         return None
 
-    @abstractmethod
     def visit_formal(self, element: Formal) -> translate.Exp:
-        pass
+        self.current_frame.alloc_local(False)
+        return None
 
     def visit_int_array_type(self, element: IntArrayType) -> translate.Exp:
         return None
@@ -1822,6 +1822,6 @@ class TranslateVisitor(IRVisitor):
         exp: translate.Exp = element.negated_exp.accept_ir(self)
         return translate.Exp(tree.BINOP(tree.BINOP.MINUS, tree.CONST(1), exp.un_ex()))
 
-    @abstractmethod
     def visit_identifier(self, element: Identifier) -> translate.Exp:
-        pass
+        access_obj: Access = self.current_frame.alloc_local(False)
+        return translate.Exp(access_obj.exp(tree.TEMP(self.current_frame.FP())))
