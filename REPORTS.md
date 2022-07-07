@@ -73,31 +73,31 @@
 
 1. Qual é o nome do relator?
 
-    > Escreva sua resposta aqui
+    > Luiz Felipe Sousa Maciel
 
 2. A etapa foi completamente ou parcialmente concluída?
 
-    > Escreva sua resposta aqui
+    > Parcialmente
 
 3. No caso de parcialmente concluída, o que não foi concluído?
 
-    > Escreva sua resposta aqui
+    > Faltaram as implementações de alguns métodos do TranslateVisitor (class_decl_extends, block, call, identifier_exp, this) bem como testar as funções implementadas, assim, não sei ao certo se estão implementadas de maneira correta
 
 4. O programa passa nos testes automatizados?
     
-    > Escreva sua resposta aqui
+    > Não houve testes automatizados para esta estapa
 
 5. Algum erro de execução foi encontrado para alguma das entradas? Quais?
     
-    > Escreva sua resposta aqui
+    > O código não foi testado, como não haviam testes, não sabia exatamente o que esperar de output. Todos os códigos foram feitos com base no livro referência, assim como nos slides/video aulas anteriores
 
 6. Quais as dificuldades encontradas para realização da etapa do projeto?
     
-    > Escreva sua resposta aqui
+    > Construir de maneira "correta" os comandos utilizando as estruturas específicas (CJUMP, SEQ, ESEQ, etc.)
 
 7. Qual a participação de cada membro da equipe na etapa de execução?
     
-    > Escreva sua resposta aqui
+    > Luiz Felipe: Tudo
 
 
 # 4º Relatóio: Etapa AI-d (Seleção de Instruções)
